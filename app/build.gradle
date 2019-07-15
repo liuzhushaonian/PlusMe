@@ -10,8 +10,8 @@ android {
         applicationId "com.xp.legend.plusme"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 3
-        versionName "0.3-me"
+        versionCode 4
+        versionName "0.4-me"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

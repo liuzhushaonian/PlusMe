@@ -112,6 +112,8 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
                             Intent intent= (Intent) param.args[2];
 
                             if (intent==null||intent.getData()==null){
+
+                                deletePic();
                                 return null;
                             }
 
@@ -122,9 +124,11 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
                                 startCropImage(uri,width,height,12345);
                                 pic=uri;//赋值
 
+                            }else {
+
+                                deletePic();
+
                             }
-
-
 
                             return null;
                         }
@@ -134,6 +138,9 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
                             Intent data= (Intent) param.args[2];
 
                             if (data==null||data.getData()==null){
+
+                                deletePic();
+
                                 return null;
                             }
 
