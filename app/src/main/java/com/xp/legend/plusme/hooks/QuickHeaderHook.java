@@ -34,6 +34,8 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
 
     private ViewGroup header;
 
+    private Uri pic;
+
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
 
@@ -56,29 +58,18 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
                         super.afterHookedMethod(param);
 
                         TextView title= (TextView) XposedHelpers.getObjectField(param.thisObject,"mWelcomeTitle");
-//
-//                        String t=title.getText().toString();
-//
-//                        XposedBridge.log("title---->>"+t);
 
                         header= (ViewGroup) param.thisObject;//获取头部
 
                         header.setBackgroundTintList(null);//清除原有背景
 
 
-
-//                        header.setBackgroundColor(Color.GREEN);
-
-//                        XposedBridge.log("me--->>change"+header.toString());
-
-                        //仅仅针对title的点击来打开相册并设置
                         title.setOnClickListener(v -> {
 
                             width= (header.getWidth());
 
                             height= (header.getHeight());
 
-//                            XposedBridge.log("click!!--->>"+width+"\nheight--->>"+height);
                             openAlbum(54321);
 
                         });
@@ -129,7 +120,7 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
                             if (uri!=null){
 
                                 startCropImage(uri,width,height,12345);
-
+                                pic=uri;//赋值
 
                             }
 
@@ -291,6 +282,8 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
 
             saveBg(bitmap);
 
+            AndroidAppHelper.currentApplication().getContentResolver().delete(uri,null,null);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -298,6 +291,8 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
         setBg(bitmap);
 
         Toast.makeText(activity, "设置成功", Toast.LENGTH_SHORT).show();
+
+
 
 
     }
@@ -318,6 +313,8 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
         BitmapDrawable drawable=new BitmapDrawable(AndroidAppHelper.currentApplication().getResources(),bg);
 
         header.setBackground(drawable);
+
+        deletePic();//删除生成的文件
 
     }
 
@@ -389,6 +386,24 @@ public class QuickHeaderHook implements IXposedHookLoadPackage {
             }
 
         }
+
+    }
+
+    private void deletePic(){
+
+        if (pic!=null){
+
+            AndroidAppHelper.currentApplication().getContentResolver().delete(pic,null,null);
+
+        }
+
+//        File outFile = new File(Environment.getExternalStorageDirectory()+"/plusme","pic");//临时文件
+//
+//        if (outFile.exists()){
+//
+//            outFile.delete();
+//
+//        }
 
     }
 
